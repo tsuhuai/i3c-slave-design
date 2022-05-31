@@ -53,7 +53,9 @@ reg [15:0] TC_1;
 reg [7:0] TC_2;
 wire [7:0] time_info_byte;
 wire ibi_timec;
-
+reg overflow_dly;
+wire overflow;
+	
 always @(posedge CLK_SLOW or negedge RSTn) begin
    if (~RSTn) sc1_delay <= 3'h0;
    else sc1_delay <= #1 {sc1_delay[1:0], sc1_stop};
@@ -108,7 +110,14 @@ always @(posedge CLK_SLOW or negedge RSTn) begin
    else timer2 <= #1 timer2 + 1'b1;
 end
 
-assign time_overflow = (&timer1) | (&timer2);
+assign overflow = (&timer1) | (&timer2);
+
+always @(posedge CLK_SLOW or negedge RSTn) begin
+	if (~RSTn) overflow_dly <= 1'b0;
+	else overflow_dly <= #1 overfliw;
+end
+
+assign time_overflow = overflow & ~overflow_dly;
 
 always @(posedge CLK_SLOW or negedge RSTn) begin
    if (~RSTn) begin
@@ -122,9 +131,9 @@ assign time_info_byte = (time_info_sel == 3'h5) ? TC_1[7:0] :
                        (time_info_sel == 3'h6) ? TC_1[15:8] :     
 					   (time_info_sel == 3'h7) ? TC_2[7:0] : 8'h0;
 					   
-assign ibi_timec = (time_info_sel >= 3'h4) & (time_info_sel <= 3'h6);
+	assign ibi_timec = (time_info_sel >= 3'h4) & (time_info_sel <= 3'h7);
 
-assign slow_gate = 1'b1;
+assign slow_gate = 1'b1;//tentative
 endmodule					   
 
    
