@@ -140,7 +140,7 @@ module i3c_auton_wrap_full #(
     parameter PIN_MODEL       = `PINM_COMBO, // combinatorial pin use
       // BCR auto filled in from params. But, cannot do offline or bridge
     parameter  ID_BCR         = (|ENA_HDR<<5) | ((ENA_IBI_MR_HJ&8'h03)<<1) |
-                                |(MAX_DS_RDTURN|MAX_DS_WR|MAX_DS_RD), // limits at [0]
+                                (MAX_DS_RDTURN|MAX_DS_WR|MAX_DS_RD), // limits at [0]
     // next is never passed - computed here
     parameter priv_sz         = PIN_MODEL[1] ? (ENA_HDR[0] ? 3 : 1) : 0// wider if ext-pad+ddr
   )
