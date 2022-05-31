@@ -263,7 +263,7 @@ module i3c_ccc_slave #(
   localparam LOAD_GPID  = `CBA(7'd48);
   localparam LOAD_GBCR  = `CBA(7'd8);
   localparam LOAD_GDCR  = `CBA(7'd8);
-  localparam LOAD_GHDR  = `CBA(7'd8);
+  localparam LOAD_GHDR  = `CBA(7'd32);
   localparam LOAD_SMXWL = `CMX(7'd16);
   localparam LOAD_SMXRL = `CMX(7'd16);
   localparam LOAD_GMXWL = `CMX(7'd16);
