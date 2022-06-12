@@ -15,7 +15,7 @@ module i3c_time_control (
    scan_no_rst
    );
    
-   
+//Inpout
 input RSTn;
 input CLK_SLOW;
 input clk_SCL_n;
@@ -27,13 +27,13 @@ input sc2_stop;
 input [2:0] time_info_sel;
 input scan_no_rst;
 
-
+//Output
 output [7:0] time_info_byte;
 output time_overflow;
-output ibi_timec;   
+output ibi_timec;
 output slow_gate;
 
-
+//Internal signals
 reg [2:0] sc1_delay;
 reg [2:0] sc2_delay;
 wire sc1_stop_pulse;
@@ -55,7 +55,8 @@ wire [7:0] time_info_byte;
 wire ibi_timec;
 reg overflow_dly;
 wire overflow;
-	
+
+//Function
 always @(posedge CLK_SLOW or negedge RSTn) begin
    if (~RSTn) sc1_delay <= 3'h0;
    else sc1_delay <= #1 {sc1_delay[1:0], sc1_stop};
@@ -114,7 +115,7 @@ assign overflow = (&timer1) | (&timer2);
 
 always @(posedge CLK_SLOW or negedge RSTn) begin
 	if (~RSTn) overflow_dly <= 1'b0;
-	else overflow_dly <= #1 overfliw;
+	else overflow_dly <= #1 overflow;
 end
 
 assign time_overflow = overflow & ~overflow_dly;
@@ -122,18 +123,17 @@ assign time_overflow = overflow & ~overflow_dly;
 always @(posedge CLK_SLOW or negedge RSTn) begin
    if (~RSTn) begin
       TC_1 <= 16'h0;
-	  TC_2 <= 8'h0;
+      TC_2 <= 8'h0;
    end
    else if (sc1_stop_pulse) TC_1 <= #1 timer1;
    else if (sc2_stop_pulse) TC_2 <= #1 timer2;
 end
 assign time_info_byte = (time_info_sel == 3'h5) ? TC_1[7:0] :
-                       (time_info_sel == 3'h6) ? TC_1[15:8] :     
-					   (time_info_sel == 3'h7) ? TC_2[7:0] : 8'h0;
+                        (time_info_sel == 3'h6) ? TC_1[15:8] :
+                        (time_info_sel == 3'h7) ? TC_2[7:0] : 8'h0;
 					   
-	assign ibi_timec = (time_info_sel >= 3'h4) & (time_info_sel <= 3'h7);
+assign ibi_timec = (time_info_sel >= 3'h4) & (time_info_sel <= 3'h7);
 
 assign slow_gate = 1'b1;//tentative
-endmodule					   
 
-   
+endmodule
